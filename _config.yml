@@ -1,0 +1,10 @@
+title: "image_ai_offline_distillation"
+description: "image_ai_offline_distillation"
+baseurl: "/image_ai_offline_distillation"
+url: "https://europanite.github.io"
+theme: minima
+markdown: kramdown
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+highlighter: rouge
