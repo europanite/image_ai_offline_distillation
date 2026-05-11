@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
@@ -64,10 +64,9 @@ def cache_teacher_logits(
     device: str = "cpu",
 ) -> dict[str, Any]:
     import torch
-    from torch.utils.data import DataLoader
-
     from distillation.data import build_dataset
     from distillation.models import build_teacher, count_parameters
+    from torch.utils.data import DataLoader
 
     paths = _paths()
     runtime_device = _device(device)
@@ -123,10 +122,9 @@ def train_student(
 ) -> dict[str, Any]:
     import torch
     import torch.nn.functional as F
-    from torch.utils.data import DataLoader, TensorDataset
-
     from distillation.data import build_dataset
     from distillation.models import build_student, count_parameters
+    from torch.utils.data import DataLoader, TensorDataset
 
     paths = _paths()
     metadata = _load_metadata()
@@ -142,7 +140,7 @@ def train_student(
             f"{effective_samples} != {teacher_logits.shape[0]}"
         )
 
-    # Materialize image tensors once so shuffled student training can align images and cached logits.
+    # Materialize tensors once so shuffled student training can align images and logits.
     images: list[torch.Tensor] = []
     for batch_images, _targets in loader:
         images.append(batch_images)
@@ -243,5 +241,8 @@ def run_all(
 def read_report() -> dict[str, Any]:
     path = _paths()["report"]
     if not path.exists():
-        return {"status": "missing", "message": "No report yet. Run train-student or run-all first."}
+        return {
+            "status": "missing",
+            "message": "No report yet. Run train-student or run-all first.",
+        }
     return json.loads(path.read_text(encoding="utf-8"))

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
 
 from PIL import Image
 
@@ -42,10 +42,9 @@ def build_dataset(dataset: str, samples: int | None = None):
     """
 
     import torch
+    from distillation.settings import data_dir, image_folder
     from torch.utils.data import Subset
     from torchvision import datasets, transforms
-
-    from distillation.settings import data_dir, image_folder
 
     transform = transforms.Compose(
         [
@@ -70,7 +69,12 @@ def build_dataset(dataset: str, samples: int | None = None):
         return base, effective
 
     if dataset == "cifar10":
-        base = datasets.CIFAR10(root=str(data_dir()), train=True, download=True, transform=transform)
+        base = datasets.CIFAR10(
+            root=str(data_dir()),
+            train=True,
+            download=True,
+            transform=transform,
+        )
     elif dataset == "image_folder":
         base = FlatImageFolderDataset(image_folder(), transform=transform)
     else:

@@ -3,7 +3,6 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-
 SUPPORTED_TEACHERS = ["resnet18", "resnet50", "mobilenet_v3_large"]
 SUPPORTED_DATASETS = ["fake", "cifar10", "image_folder"]
 
