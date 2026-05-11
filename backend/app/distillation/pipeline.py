@@ -64,9 +64,10 @@ def cache_teacher_logits(
     device: str = "cpu",
 ) -> dict[str, Any]:
     import torch
+    from torch.utils.data import DataLoader
+
     from distillation.data import build_dataset
     from distillation.models import build_teacher, count_parameters
-    from torch.utils.data import DataLoader
 
     paths = _paths()
     runtime_device = _device(device)
@@ -122,9 +123,10 @@ def train_student(
 ) -> dict[str, Any]:
     import torch
     import torch.nn.functional as F
+    from torch.utils.data import DataLoader, TensorDataset
+
     from distillation.data import build_dataset
     from distillation.models import build_student, count_parameters
-    from torch.utils.data import DataLoader, TensorDataset
 
     paths = _paths()
     metadata = _load_metadata()

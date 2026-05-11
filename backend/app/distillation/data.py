@@ -42,9 +42,10 @@ def build_dataset(dataset: str, samples: int | None = None):
     """
 
     import torch
-    from distillation.settings import data_dir, image_folder
     from torch.utils.data import Subset
     from torchvision import datasets, transforms
+
+    from distillation.settings import data_dir, image_folder
 
     transform = transforms.Compose(
         [
