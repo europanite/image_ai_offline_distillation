@@ -1,13 +1,12 @@
 # [Image Offline Distillation](https://github.com/europanite/image_ai_offline_distillation "Image Offline Distillation")
 
-A small GitHub-ready template for experiencing **offline knowledge distillation from a public image model**.
+A small container for **offline knowledge distillation.
 
 The project keeps a simple full-stack shape:
 
 - **Backend**: FastAPI + PyTorch + torchvision
 - **Frontend**: Expo / React Native Web
 - **Container**: Docker Compose
-- **No Makefile**
 
 ## What this learns
 
