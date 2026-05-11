@@ -1,5 +1,7 @@
 # [Image Offline Distillation](https://github.com/europanite/image_ai_offline_distillation "Image Offline Distillation")
 
+!["image"](./assets/images/image.png)
+
 A small container for **offline knowledge distillation.
 
 The project keeps a simple full-stack shape:
