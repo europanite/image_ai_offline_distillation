@@ -1,0 +1,31 @@
+{
+  "name": "public-image-distillation-lab",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "web": "expo start --web",
+    "export:web": "expo export --platform web",
+    "serve:web": "node scripts/serve-dist.mjs",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@expo/metro-runtime": "4.0.1",
+    "expo": "~52.0.47",
+    "expo-status-bar": "~2.0.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-native": "0.76.9",
+    "react-native-web": "~0.19.13"
+  },
+  "devDependencies": {
+    "@testing-library/react-native": "13.3.3",
+    "@types/jest": "^29.5.14",
+    "@types/react": "~18.3.12",
+    "jest": "^29.7.0",
+    "jest-expo": "~52.0.6",
+    "react-test-renderer": "18.3.1",
+    "typescript": "~5.3.3"
+  }
+}

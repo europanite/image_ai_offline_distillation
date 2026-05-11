@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "Public Image Distillation Lab",
+    "slug": "public-image-distillation-lab",
+    "version": "0.1.0",
+    "platforms": ["web", "ios", "android"],
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}

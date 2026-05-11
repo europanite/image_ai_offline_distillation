@@ -1,0 +1,20 @@
+services:
+  backend_test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.test
+    environment:
+      DISTILLATION_ARTIFACT_DIR: /tmp/artifacts
+      DISTILLATION_DATA_DIR: /tmp/data
+      DISTILLATION_IMAGE_FOLDER: /tmp/data/images
+    volumes:
+      - ./backend/app:/app
+      - ./backend/tests:/tests
+      - ./backend/reports:/reports
+    command: pytest -q
+
+  frontend_test:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.test
+    command: npm test -- --runInBand

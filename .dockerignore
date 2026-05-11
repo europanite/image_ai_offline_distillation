@@ -1,0 +1,16 @@
+.git
+.gitignore
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+node_modules/
+.expo/
+.expo-shared/
+coverage/
+backend/reports/
+artifacts/
+data/
+.DS_Store
+.vscode/
+.idea/
