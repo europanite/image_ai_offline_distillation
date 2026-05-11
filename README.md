@@ -68,11 +68,6 @@ Frontend direct Metro: http://localhost:8081
 Backend:  http://localhost:8000/docs
 ```
 
-
-## Frontend note
-
-The frontend remains Expo-based. Docker runs `expo export --platform web` and then serves the exported web build on `0.0.0.0:19006`. This avoids Docker networking problems with the interactive Expo dev server while still using Expo for the web build.
-
 ## Run from API
 
 ```bash
