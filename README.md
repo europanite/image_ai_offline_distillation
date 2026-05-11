@@ -38,7 +38,6 @@ After this file is created, the student can be trained without calling the teach
 
 | Dataset | Purpose |
 | --- | --- |
-| `fake` | Smoke test. Does not require real images. |
 | `cifar10` | Downloads CIFAR-10 and resizes it to ImageNet input size. |
 | `image_folder` | Uses your own unlabeled images under `data/images`. |
 
