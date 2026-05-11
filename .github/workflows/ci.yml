@@ -27,16 +27,16 @@ jobs:
           DOCKER_BUILDKIT: 1
         run: |
           docker build \
-            -f service/Dockerfile.test \
-            -t local/service-test:ci \
-            service
+            -f backend/Dockerfile.test \
+            -t local/backend-test:ci \
+            backend
       - name: Save images for downstream jobs
         run: |
-          docker save local/service-test:ci | gzip > service-test.tar.gz
+          docker save local/backend-test:ci | gzip > backend-test.tar.gz
       - uses: actions/upload-artifact@v4
         with:
           name: test-images
-          path: service-test.tar.gz
+          path: backend-test.tar.gz
   service-tests:
     runs-on: ${{ matrix.os }}
     permissions:
@@ -54,19 +54,19 @@ jobs:
           name: test-images
       - name: Load images
         run: |
-          gunzip -c service-test.tar.gz | docker load
+          gunzip -c backend-test.tar.gz | docker load
       - name: Prepare report dir on host (mounted into /reports)
-        run: mkdir -p service/reports/ci
-      - name: Run service tests
+        run: mkdir -p backend/reports/ci
+      - name: Run backend tests
         run: |
-          docker compose -f docker-compose.test.yml run --rm   --entrypoint /bin/sh service_test -lc '
+          docker compose -f docker-compose.test.yml run --rm --entrypoint /bin/sh backend_test -lc '
               python -m coverage run -m pytest
             '
       - name: Upload coverage xml
         uses: actions/upload-artifact@v4
         with:
           name: coverage-xml
-          path: service/reports/ci/coverage.xml
+          path: backend/reports/ci/coverage.xml
           if-no-files-found: error
       - name: Cleanup
         env:

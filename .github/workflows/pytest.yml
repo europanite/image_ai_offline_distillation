@@ -22,7 +22,7 @@ jobs:
         python-version: [ "3.9", "3.10", "3.11", "3.12", "3.13" ]
     env:
       PYTHONUTF8: "1"
-      PYTHONPATH: ${{ github.workspace }}/service
+      PYTHONPATH: ${{ github.workspace }}/backend/app
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,9 +39,9 @@ jobs:
         run: |
           set -eux
           python -m pip install -U pip
-          pip install -r service/requirements.test.txt
-          if [ -f service/pyproject.toml ] || [ -f service/setup.cfg ] || [ -f service/setup.py ]; then
-            pip install -e service
+          pip install -r backend/requirements.test.txt
+          if [ -f backend/pyproject.toml ] || [ -f backend/setup.cfg ] || [ -f backend/setup.py ]; then
+            pip install -e backend
           fi
       - name: Install deps (Windows)
         if: matrix.os == 'windows-latest'
@@ -49,14 +49,14 @@ jobs:
         run: |
           $ErrorActionPreference = "Stop"
           python -m pip install -U pip
-          pip install -r service/requirements.test.txt
-          $hasPythonProject = (Test-Path -Path 'service/pyproject.toml') -or
-                            (Test-Path -Path 'service/setup.cfg') -or
-                            (Test-Path -Path 'service/setup.py')
+          pip install -r backend/requirements.test.txt
+          $hasPythonProject = (Test-Path -Path 'backend/pyproject.toml') -or
+                            (Test-Path -Path 'backend/setup.cfg') -or
+                            (Test-Path -Path 'backend/setup.py')
           if ($hasPythonProject) {
-            python -m pip install -e service
+            python -m pip install -e backend
           } else {
-            Write-Host 'service packaging files not found; skipping'
+            Write-Host 'backend packaging files not found; skipping'
           }
       - name: Show versions
         shell: bash
