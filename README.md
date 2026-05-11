@@ -139,9 +139,3 @@ artifacts/
 docker compose -f docker-compose.test.yml run --rm backend_test
 docker compose -f docker-compose.yml -f docker-compose.test.yml run --rm frontend_test
 ```
-
-## Notes about diffusion models
-
-Distilling text-to-image diffusion models such as Stable Diffusion is a heavier task. It usually involves latent-space objectives, scheduler changes, multi-step teacher sampling, and GPU-heavy training.
-
-This repository is the first stage: it teaches the offline logits-cache pattern with public image models. After this works, the next step is to create a diffusion-specific branch using LCM-LoRA or teacher latent predictions.
