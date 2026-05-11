@@ -10,6 +10,7 @@ services:
     volumes:
       - ./backend/app:/app
       - ./backend/tests:/tests
+      - ./backend/pytest.ini:/app/pytest.ini:ro
       - ./backend/reports:/reports
     command: pytest -q
 
