@@ -27,10 +27,6 @@ The project keeps a simple full-stack shape:
 - **Frontend**: Expo / React Native Web
 - **Container**: Docker Compose
 
-## What this learns
-
-This repository does not train a large diffusion model. It teaches the offline distillation pattern with a public image classifier:
-
 ```text
 public ImageNet teacher model
   -> run once on images
