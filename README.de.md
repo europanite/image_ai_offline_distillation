@@ -1,8 +1,8 @@
 ---
 layout: page
-title: "🇺🇸 English"
-permalink: /
-lang: en
+title: "🇩🇪 Deutsch"
+permalink: /de/
+lang: de
 ---
 
 # [Image Offline Distillation](https://github.com/europanite/image_ai_offline_distillation "Image Offline Distillation")
@@ -36,15 +36,18 @@ lang: en
   <a href="https://europanite.github.io/image_ai_offline_distillation/fr/">🇫🇷 Français</a>
 </p>
 
-!["image"](./assets/images/web_ui.png)
+Ein kleines GitHub-ready template, um **offline knowledge distillation aus einem öffentlichen Bildmodell** zu erleben.
 
-A small container for **offline knowledge distillation**.
-
-The project keeps a simple full-stack shape:
+Das Projekt behält eine einfache full-stack Struktur bei:
 
 - **Backend**: FastAPI + PyTorch + torchvision
 - **Frontend**: Expo / React Native Web
 - **Container**: Docker Compose
+- **No Makefile**
+
+## Was hier gelernt wird
+
+Dieses repository trainiert kein großes diffusion model. Es vermittelt das offline distillation pattern mit einem public image classifier:
 
 ```text
 public ImageNet teacher model
@@ -54,34 +57,35 @@ public ImageNet teacher model
   -> compare teacher/student agreement
 ```
 
-The default teacher is `torchvision.models.resnet18` with public ImageNet weights. You can also use `resnet50` or `mobilenet_v3_large`.
+Der default teacher ist `torchvision.models.resnet18` mit public ImageNet weights. Du kannst auch `resnet50` oder `mobilenet_v3_large` verwenden.
 
-The student is a tiny CNN that outputs the same 1000 ImageNet logits. It is trained to imitate the teacher's softened probability distribution.
+Der student ist eine tiny CNN, die dieselben 1000 ImageNet logits output. Sie wird trainiert, um die softened probability distribution des teacher nachzuahmen.
 
-## Why this is offline distillation
+## Warum dies offline distillation ist
 
-The key artifact is:
+Das zentrale artifact ist:
 
 ```text
 artifacts/teacher_logits_train.pt
 ```
 
-After this file is created, the student can be trained without calling the teacher model again.
+Nachdem diese file erstellt wurde, kann der student trainiert werden, ohne das teacher model erneut zu callen.
 
 ## Dataset modes
 
 | Dataset | Purpose |
 | --- | --- |
-| `cifar10` | Downloads CIFAR-10 and resizes it to ImageNet input size. |
-| `image_folder` | Uses your own unlabeled images under `data/images`. |
+| `fake` | Smoke test. Erfordert keine real images. |
+| `cifar10` | Lädt CIFAR-10 herunter und resized es auf die ImageNet input size. |
+| `image_folder` | Verwendet deine eigenen unlabeled images unter `data/images`. |
 
-For a real experiment, put images here:
+Für ein real experiment lege images hier ab:
 
 ```text
 data/images/
 ```
 
-Nested folders are allowed. Labels are not required.
+Nested folders sind erlaubt. Labels sind nicht erforderlich.
 
 ## Start
 
@@ -92,21 +96,25 @@ docker compose up --build
 ```
 
 
-> The frontend service uses Expo Web with Docker `network_mode: host` so that `expo start --web --localhost --port 8081` is reachable from the host browser. This is intended for Linux Docker environments.
+> Der frontend service verwendet Expo Web mit Docker `network_mode: host`, sodass `expo start --web --localhost --port 8081` vom host browser aus reachable ist. Dies ist für Linux Docker environments intended.
 
 Open:
 
 ```text
 Frontend: http://localhost:8081
+Frontend direct Metro: http://localhost:8081
 Backend:  http://localhost:8000/docs
 ```
+
+
+## Frontend note
+
+Das frontend bleibt Expo-based. Docker führt `expo export --platform web` aus und serviert anschließend den exported web build auf `0.0.0.0:19006`. Dadurch werden Docker networking problems mit dem interactive Expo dev server vermieden, während Expo weiterhin für den web build genutzt wird.
 
 ## Run from API
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/distillation/run-all \
-  -H 'Content-Type: application/json' \
-  -d '{
+curl -X POST http://localhost:8000/api/v1/distillation/run-all   -H 'Content-Type: application/json'   -d '{
     "teacher": "resnet18",
     "dataset": "fake",
     "samples": 128,
@@ -121,25 +129,13 @@ curl -X POST http://localhost:8000/api/v1/distillation/run-all \
 ## Run from CLI
 
 ```bash
-docker compose run --rm backend python /app/cli.py run-all \
-  --teacher resnet18 \
-  --dataset fake \
-  --samples 128 \
-  --batch-size 16 \
-  --epochs 2 \
-  --temperature 3.0 \
-  --device cpu
+docker compose run --rm backend python /app/cli.py run-all   --teacher resnet18   --dataset fake   --samples 128   --batch-size 16   --epochs 2   --temperature 3.0   --device cpu
 ```
 
-For your own image folder:
+Für deinen eigenen image folder:
 
 ```bash
-docker compose run --rm backend python /app/cli.py run-all \
-  --teacher resnet18 \
-  --dataset image_folder \
-  --samples 256 \
-  --epochs 3 \
-  --device cpu
+docker compose run --rm backend python /app/cli.py run-all   --teacher resnet18   --dataset image_folder   --samples 256   --epochs 3   --device cpu
 ```
 
 ## Outputs
@@ -152,7 +148,7 @@ artifacts/
 └── report.json
 ```
 
-`report.json` includes:
+`report.json` enthält:
 
 - `teacher_student_top1_agreement`
 - `distillation_kl`
@@ -165,3 +161,9 @@ artifacts/
 docker compose -f docker-compose.test.yml run --rm backend_test
 docker compose -f docker-compose.yml -f docker-compose.test.yml run --rm frontend_test
 ```
+
+## Notes about diffusion models
+
+Das Distilling von text-to-image diffusion models wie Stable Diffusion ist eine schwerere task. Üblicherweise umfasst es latent-space objectives, scheduler changes, multi-step teacher sampling und GPU-heavy training.
+
+Dieses repository ist die erste stage: Es vermittelt das offline logits-cache pattern mit public image models. Nachdem dies funktioniert, ist der nächste step, eine diffusion-specific branch mit LCM-LoRA oder teacher latent predictions zu erstellen.

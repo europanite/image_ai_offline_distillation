@@ -1,8 +1,8 @@
 ---
 layout: page
-title: "🇺🇸 English"
-permalink: /
-lang: en
+title: "🇰🇷 한국어"
+permalink: /ko/
+lang: ko
 ---
 
 # [Image Offline Distillation](https://github.com/europanite/image_ai_offline_distillation "Image Offline Distillation")
@@ -36,15 +36,18 @@ lang: en
   <a href="https://europanite.github.io/image_ai_offline_distillation/fr/">🇫🇷 Français</a>
 </p>
 
-!["image"](./assets/images/web_ui.png)
+**공개 이미지 모델에서 offline knowledge distillation**을 체험하기 위한 작은 GitHub-ready template입니다.
 
-A small container for **offline knowledge distillation**.
-
-The project keeps a simple full-stack shape:
+이 프로젝트는 단순한 full-stack 구조를 유지합니다:
 
 - **Backend**: FastAPI + PyTorch + torchvision
 - **Frontend**: Expo / React Native Web
 - **Container**: Docker Compose
+- **No Makefile**
+
+## 여기서 배우는 것
+
+이 repository는 대형 diffusion model을 train하지 않습니다. public image classifier를 사용해 offline distillation pattern을 가르칩니다:
 
 ```text
 public ImageNet teacher model
@@ -54,34 +57,35 @@ public ImageNet teacher model
   -> compare teacher/student agreement
 ```
 
-The default teacher is `torchvision.models.resnet18` with public ImageNet weights. You can also use `resnet50` or `mobilenet_v3_large`.
+Default teacher는 public ImageNet weights를 사용하는 `torchvision.models.resnet18`입니다. `resnet50` 또는 `mobilenet_v3_large`도 사용할 수 있습니다.
 
-The student is a tiny CNN that outputs the same 1000 ImageNet logits. It is trained to imitate the teacher's softened probability distribution.
+Student는 동일한 1000개의 ImageNet logits를 output하는 tiny CNN입니다. Teacher의 softened probability distribution을 모방하도록 train됩니다.
 
-## Why this is offline distillation
+## 왜 offline distillation인가
 
-The key artifact is:
+핵심 artifact는 다음입니다:
 
 ```text
 artifacts/teacher_logits_train.pt
 ```
 
-After this file is created, the student can be trained without calling the teacher model again.
+이 file이 생성된 후에는 teacher model을 다시 call하지 않고 student를 train할 수 있습니다.
 
 ## Dataset modes
 
 | Dataset | Purpose |
 | --- | --- |
-| `cifar10` | Downloads CIFAR-10 and resizes it to ImageNet input size. |
-| `image_folder` | Uses your own unlabeled images under `data/images`. |
+| `fake` | Smoke test. Real images가 필요하지 않습니다. |
+| `cifar10` | CIFAR-10을 download하고 ImageNet input size로 resize합니다. |
+| `image_folder` | `data/images` 아래의 자체 unlabeled images를 사용합니다. |
 
-For a real experiment, put images here:
+Real experiment를 위해 images를 여기에 넣으세요:
 
 ```text
 data/images/
 ```
 
-Nested folders are allowed. Labels are not required.
+Nested folders를 사용할 수 있습니다. Labels는 필요하지 않습니다.
 
 ## Start
 
@@ -92,21 +96,25 @@ docker compose up --build
 ```
 
 
-> The frontend service uses Expo Web with Docker `network_mode: host` so that `expo start --web --localhost --port 8081` is reachable from the host browser. This is intended for Linux Docker environments.
+> Frontend service는 Docker `network_mode: host`와 함께 Expo Web을 사용하므로 `expo start --web --localhost --port 8081`에 host browser에서 접근할 수 있습니다. 이는 Linux Docker environments를 intended한 것입니다.
 
 Open:
 
 ```text
 Frontend: http://localhost:8081
+Frontend direct Metro: http://localhost:8081
 Backend:  http://localhost:8000/docs
 ```
+
+
+## Frontend note
+
+Frontend는 Expo-based 상태를 유지합니다. Docker는 `expo export --platform web`을 실행한 다음 exported web build를 `0.0.0.0:19006`에서 serve합니다. 이렇게 하면 web build에는 계속 Expo를 사용하면서 interactive Expo dev server의 Docker networking problems를 피할 수 있습니다.
 
 ## Run from API
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/distillation/run-all \
-  -H 'Content-Type: application/json' \
-  -d '{
+curl -X POST http://localhost:8000/api/v1/distillation/run-all   -H 'Content-Type: application/json'   -d '{
     "teacher": "resnet18",
     "dataset": "fake",
     "samples": 128,
@@ -121,25 +129,13 @@ curl -X POST http://localhost:8000/api/v1/distillation/run-all \
 ## Run from CLI
 
 ```bash
-docker compose run --rm backend python /app/cli.py run-all \
-  --teacher resnet18 \
-  --dataset fake \
-  --samples 128 \
-  --batch-size 16 \
-  --epochs 2 \
-  --temperature 3.0 \
-  --device cpu
+docker compose run --rm backend python /app/cli.py run-all   --teacher resnet18   --dataset fake   --samples 128   --batch-size 16   --epochs 2   --temperature 3.0   --device cpu
 ```
 
-For your own image folder:
+자체 image folder를 사용하는 경우:
 
 ```bash
-docker compose run --rm backend python /app/cli.py run-all \
-  --teacher resnet18 \
-  --dataset image_folder \
-  --samples 256 \
-  --epochs 3 \
-  --device cpu
+docker compose run --rm backend python /app/cli.py run-all   --teacher resnet18   --dataset image_folder   --samples 256   --epochs 3   --device cpu
 ```
 
 ## Outputs
@@ -152,7 +148,7 @@ artifacts/
 └── report.json
 ```
 
-`report.json` includes:
+`report.json`에는 다음이 포함됩니다:
 
 - `teacher_student_top1_agreement`
 - `distillation_kl`
@@ -165,3 +161,9 @@ artifacts/
 docker compose -f docker-compose.test.yml run --rm backend_test
 docker compose -f docker-compose.yml -f docker-compose.test.yml run --rm frontend_test
 ```
+
+## Diffusion models에 대한 notes
+
+Stable Diffusion 같은 text-to-image diffusion models를 distill하는 것은 더 무거운 task입니다. 일반적으로 latent-space objectives, scheduler changes, multi-step teacher sampling, GPU-heavy training이 포함됩니다.
+
+이 repository는 첫 번째 stage입니다. public image models로 offline logits-cache pattern을 가르칩니다. 이것이 작동하면 다음 step은 LCM-LoRA 또는 teacher latent predictions를 사용해 diffusion-specific branch를 만드는 것입니다.
